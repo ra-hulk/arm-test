@@ -19,8 +19,7 @@
 			"name": "7e42a27d-566a-4432-8594-d1cf37c1b3a8",
 			"properties": {
 				"principalId": "[parameters('principalId')]",
-				"roleDefinitionId": "[parameters('roleDefinitionId')]",
-				"scope": "[parameters('scope')]"
+				"roleDefinitionId": "[parameters('roleDefinitionId')]"
 			}
 		}
 	]
