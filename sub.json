@@ -2,24 +2,41 @@
 	"$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
 	"contentVersion": "1.0.0.0",
 	"parameters": {
-		"principalId": {
-			"type": "string"
-		},
-		"roleDefinitionId": {
-			"type": "string"
-		},
-		"scope": {
-			"type": "string"
+		"roleMappings": {
+			"type": "array"
 		}
 	},
 	"resources": [
+		// {
+		// 	"type": "Microsoft.Authorization/roleAssignments",
+		// 	"apiVersion": "2022-04-01",
+		// 	"name": "7e42a27d-566a-4432-8594-d1cf37c1b3a8",
+		// 	"properties": {
+		// 		"principalId": "[parameters('principalId')]",
+		// 		"roleDefinitionId": "[parameters('roleDefinitionId')]"
+		// 	}
+		// }
 		{
+			"copy": {
+				"name": "identityRoleCopy",
+				"count": "[length(parameters('roleMappings'))]"
+			},
 			"type": "Microsoft.Authorization/roleAssignments",
 			"apiVersion": "2022-04-01",
-			"name": "7e42a27d-566a-4432-8594-d1cf37c1b3a8",
+			"name": "[parameters('roleMappings')[copyIndex().roleId]]",
 			"properties": {
-				"principalId": "[parameters('principalId')]",
-				"roleDefinitionId": "[parameters('roleDefinitionId')]"
+				"copy": [
+					{
+						"name": "principalId",
+						"count": "[length(parameters('roleMappings'))]",
+						"input": "[copyIndex('principalId').principalId[0]]"
+					},
+					{
+						"name": "roleDefinitionId",
+						"count": "[length(parameters('roleMappings'))]",
+						"input": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionId'))]"
+					}
+				]
 			}
 		}
 	]
