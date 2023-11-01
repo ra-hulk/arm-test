@@ -3,41 +3,23 @@
 	"contentVersion": "1.0.0.0",
 	"parameters": {
 		"roleMappings": {
-			"type": "array"
+		"type": "array"
 		}
 	},
 	"resources": [
-		// {
-		// 	"type": "Microsoft.Authorization/roleAssignments",
-		// 	"apiVersion": "2022-04-01",
-		// 	"name": "7e42a27d-566a-4432-8594-d1cf37c1b3a8",
-		// 	"properties": {
-		// 		"principalId": "[parameters('principalId')]",
-		// 		"roleDefinitionId": "[parameters('roleDefinitionId')]"
-		// 	}
-		// }
 		{
-			"copy": {
-				"name": "identityRoleCopy",
-				"count": "[length(parameters('roleMappings'))]"
-			},
-			"type": "Microsoft.Authorization/roleAssignments",
-			"apiVersion": "2022-04-01",
-			"name": "[parameters('roleMappings')[copyIndex().roleId]]",
-			"properties": {
-				"copy": [
-					{
-						"name": "principalId",
-						"count": "[length(parameters('roleMappings'))]",
-						"input": "[copyIndex('principalId').principalId[0]]"
-					},
-					{
-						"name": "roleDefinitionId",
-						"count": "[length(parameters('roleMappings'))]",
-						"input": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionId'))]"
-					}
-				]
-			}
+		"copy": {
+			"name": "identityRoleCopy",
+			"count": "[length(parameters('roleMappings'))]"
+		},
+		"type": "Microsoft.Authorization/roleAssignments",
+		"apiVersion": "2022-04-01",
+		"name": "[guid(parameters('roleMappings')[copyIndex()].roleDefinitionId, parameters('roleMappings')[copyIndex()].principalId)]",
+		"scope": "[concat('Microsoft.Resources/resourceGroups', '/', parameters('roleMappings')[copyIndex()].resourceGroupName)]",
+		"properties": {
+			"principalId": "[parameters('roleMappings')[copyIndex()].principalId]",
+			"roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleAssignments', parameters('roleMappings')[copyIndex()].roleDefinitionId)]"
+		}
 		}
 	]
 }
