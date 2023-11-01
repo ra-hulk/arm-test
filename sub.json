@@ -16,7 +16,7 @@
 		{
 			"type": "Microsoft.Authorization/roleAssignments",
 			"apiVersion": "2022-04-01",
-			"name": "role-assignment",
+			"name": "7e42a27d-566a-4432-8594-d1cf37c1b3a8",
 			"properties": {
 				"principalId": "[parameters('principalId')]",
 				"roleDefinitionId": "[parameters('roleDefinitionId')]",
