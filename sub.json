@@ -3,23 +3,24 @@
 	"contentVersion": "1.0.0.0",
 	"parameters": {
 		"roleMappings": {
-		"type": "array"
+			"type": "array"
 		}
 	},
 	"resources": [
 		{
-		"copy": {
-			"name": "identityRoleCopy",
-			"count": "[length(parameters('roleMappings'))]"
-		},
-		"type": "Microsoft.Authorization/roleAssignments",
-		"apiVersion": "2022-04-01",
-		"name": "[guid(parameters('roleMappings')[copyIndex()].roleDefinitionId, parameters('roleMappings')[copyIndex()].principalId)]",
-		"scope": "[concat('Microsoft.Resources/resourceGroups', '/', parameters('roleMappings')[copyIndex()].resourceGroupName)]",
-		"properties": {
-			"principalId": "[parameters('roleMappings')[copyIndex()].principalId]",
-			"roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleAssignments', parameters('roleMappings')[copyIndex()].roleDefinitionId)]"
-		}
+			"copy": {
+				"name": "identityRoleCopy",
+				"count": "[length(parameters('roleMappings'))]"
+			},
+			"type": "Microsoft.Authorization/roleAssignments",
+			"apiVersion": "2022-04-01",
+			"name": "[guid(parameters('roleMappings')[copyIndex()].roleDefinitionId, parameters('roleMappings')[copyIndex()].principalId)]",
+			// "scope": "[concat('Microsoft.Resources/resourceGroups', '/', parameters('roleMappings')[copyIndex()].resourceGroupName)]",
+			"properties": {
+				"roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleAssignments', parameters('roleMappings')[copyIndex()].roleDefinitionId)]",
+				"principalType": "ServicePrincipal",
+				"principalId": "[parameters('roleMappings')[copyIndex()].principalId]"
+			}
 		}
 	]
 }
